@@ -9,8 +9,12 @@ class TrackList {
     this.data = data
     // Represents the currently displayed data
     this.viewData = data
+
     // Show stuff
     this.render()
+    // Add EventLiseners
+    this.addEventListeners()
+
   }
 
   modViewData(newData) {
@@ -51,8 +55,8 @@ class TrackList {
   }
 
   filterTracks(search) {
-    this.filtered = this.data.filter(track => track.artistName.toLowerCase().includes(search.toLowerCase()))
-    this.modViewData(this.filtered)
+    const newData = this.data.filter(track => track.artistName.toLowerCase().includes(search.toLowerCase()))
+    this.modViewData(newData)
   }
 
   sortPricing() {
@@ -68,13 +72,22 @@ class TrackList {
     this.modViewData(newData)
   }
 
-  addEventListeners(data) {
+  addEventListeners() {
+
+    // Add event listener for filter input
+    document.querySelector("#filter-input").addEventListener('keyup',
+      event => {
+        console.log(event.target.value)
+        myTrackList.filterTracks(event.target.value)
+      }
+    )
 
     // Add event listener for sort price
     document.querySelector("#price").addEventListener("click", () => this.sortPricing())
 
     // Add eventlisteners for all play button
     let playLinks = document.querySelectorAll(".fa-play")
+    let data = this.data
 
     playLinks.forEach(
       function (link) {
@@ -117,17 +130,8 @@ class TrackList {
     output += template
     // Assinging view in to innerHTML of our domElement form the constructor
     this.container.innerHTML = output
-
-    // Add all eventLiseners
-    this.addEventListeners(this.viewData)
   }
 }
 
 const myTrackList = new TrackList("#tracks", music)
 
-// Add event listener for filter input
-document.querySelector("#filter-input").addEventListener('keyup',
-  event => {
-    myTrackList.filterTracks(event.target.value)
-  }
-)

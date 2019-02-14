@@ -36,3 +36,7 @@ label {
 }
 
 p{ font-size: smaller}
+
+#price{
+  cursor: pointer;
+}

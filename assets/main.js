@@ -29,15 +29,18 @@ class TrackList {
         const { trackId, trackName, artistName, collectionName, releaseDate, artworkUrl100, trackPrice, currency, previewUrl } = track;
 
         const divElement = `
-    <div class="row">
-      <div>
-      <img src="${artworkUrl100}"></div>
-      <div>${trackName} <p>Released: ${new Date(releaseDate).toLocaleDateString()}</p></div>
-      <div>${artistName}<p>${collectionName}</p></div>
-      <div>${trackPrice == -1 ? "Only album" : trackPrice} ${currency == "USD" ? trackPrice == -1 ? "" : "$" : "€"}</div>
-
+  <div class="row">
+    <div>
+    <img src="${artworkUrl100}"></div>
+    <div>${trackName} <p>Released: ${new Date(releaseDate).toLocaleDateString()}</p></div>
+    <div>${artistName}<p>${collectionName}</p></div>
+    <div>${trackPrice == -1 ? "Only album" : trackPrice} ${currency == "USD" ? trackPrice == -1 ? "" : "$" : "€"}</div>
+    <div>
+    <i class="fas fa-play" id="${trackId}"></i>
+    <i class="fas fa-pause" id="${trackId}"></i>
     </div>
-    `
+  </div>
+  `
 
         return divElement
 
@@ -52,6 +55,53 @@ class TrackList {
     this.modViewData(this.filtered)
   }
 
+  sortPricing() {
+
+    const order = this.viewData[0].trackPrice
+      < this.viewData[this.viewData.length - 1].trackPrice
+
+    const newData = this.viewData.sort(
+      (a, b) =>
+        (order ? b.trackPrice - a.trackPrice : a.trackPrice - b.trackPrice)
+    )
+
+    this.modViewData(newData)
+  }
+
+  addEventListeners(data) {
+
+    // Add event listener for sort price
+    document.querySelector("#price").addEventListener("click", () => this.sortPricing())
+
+    // Add eventlisteners for all play button
+    let playLinks = document.querySelectorAll(".fa-play")
+
+    playLinks.forEach(
+      function (link) {
+        link.addEventListener("click", function (event) {
+          console.log(`play ${event.target.id}`)
+
+          let myTrack = data.filter(track => track.trackId == event.target.id)
+          document.querySelector("#play").innerHTML = `<audio id="player_${event.target.id}" src="${myTrack[0].previewUrl} "></audio>`
+          document.querySelector(`#player_${event.target.id}`).play()
+        })
+      })
+
+
+    // Add eventlisteners for all pause button  
+    // The pause will stop any track not only it's own - not a bug but a feuture  
+    let pauseLinks = document.querySelectorAll(".fa-pause")
+    pauseLinks.forEach(
+      link => {
+        link.addEventListener("click", () => {
+          let sounds = document.querySelectorAll("audio")
+          sounds.forEach(sound => sound.pause())
+          console.log("Stop it!")
+        })
+      })
+  }
+
+
   render() {
     // Out put will hold the complete view
     let output = ""
@@ -63,23 +113,21 @@ class TrackList {
     // Adding data in to our view !Order Matters!
     output += header
     output += "<p>Data from iTunes</p>"
-    output += "<div class=\"row th\"><div>Cover</div><div>Track</div><div>Artist</div><div id='price'>Price</div></div></div > "
+    output += "<div class=\"row th\"><div>Cover</div><div>Track</div><div>Artist</div><div id='price'>Price</div><div>Preview</div></div></div > "
     output += template
     // Assinging view in to innerHTML of our domElement form the constructor
     this.container.innerHTML = output
 
     // Add all eventLiseners
-    //this.addEventListeners()
+    this.addEventListeners(this.viewData)
   }
 }
 
-
 const myTrackList = new TrackList("#tracks", music)
+
 // Add event listener for filter input
 document.querySelector("#filter-input").addEventListener('keyup',
   event => {
-    console.log("Fired")
     myTrackList.filterTracks(event.target.value)
-
   }
 )

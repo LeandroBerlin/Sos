@@ -1,11 +1,14 @@
 body{
   font-family: Helvetica, sans-serif;
-  background-color: whitesmoke
+  background-color: rgb(42, 42, 42);
+  color: white;
 }
 
 
 .row {
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: row;
 }
 
@@ -39,4 +42,8 @@ p{ font-size: smaller}
 
 #price{
   cursor: pointer;
+}
+
+.counter{
+  font-size: large;
 }

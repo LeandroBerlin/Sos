@@ -115,12 +115,12 @@ class TrackList {
     // Out put will hold the complete view
     let output = ""
     // Setting up data for our view
-    const header = "<h1>My Tracks</h1>"
+    const header = "<h1>The Sound of Silence</h1>"
     // template methode accepts data to view and returns html string
     const template = this.template(this.viewData)
     // Adding data in to our view !Order Matters!
     output += header
-    output += "<p>Data from iTunes</p>"
+    output += `<p><i class="fas fa-music"></i> <span class="counter">${Object.keys(this.viewData).length}</span> tracks from iTunes</p>`
     output += "<div class=\"row th\"><div>Cover</div><div>Track</div><div>Artist</div><div id='price'>Price</div><div>Preview</div></div></div > "
     output += template
     // Assinging view in to innerHTML of our domElement form the constructor

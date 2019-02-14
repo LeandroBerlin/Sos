@@ -9,12 +9,8 @@ class TrackList {
     this.data = data
     // Represents the currently displayed data
     this.viewData = data
-
     // Show stuff
     this.render()
-    // Add EventLiseners
-    this.addEventListeners()
-
   }
 
   modViewData(newData) {
@@ -53,14 +49,14 @@ class TrackList {
 
     return trackList
   }
-
+  // Search filter
   filterTracks(search) {
     const newData = this.data.filter(track => track.artistName.toLowerCase().includes(search.toLowerCase()))
     this.modViewData(newData)
   }
 
   sortPricing() {
-
+    // Sort the prices
     const order = this.viewData[0].trackPrice
       < this.viewData[this.viewData.length - 1].trackPrice
 
@@ -73,43 +69,43 @@ class TrackList {
   }
 
   addEventListeners() {
+    // All DOM on-event handlers
 
-    // Add event listener for filter input
-    document.querySelector("#filter-input").addEventListener('keyup',
+    // GlobalEventHandler to filter input
+    document.querySelector("#filter-input").onkeyup =
       event => {
-        console.log(event.target.value)
+        console.log(`Searching: ${event.target.value}`)
         myTrackList.filterTracks(event.target.value)
       }
-    )
 
-    // Add event listener for sort price
+    // Event listener to sort price
     document.querySelector("#price").addEventListener("click", () => this.sortPricing())
 
-    // Add eventlisteners for all play button
+    // Create event listeners for any play-button
     let playLinks = document.querySelectorAll(".fa-play")
     let data = this.data
-
     playLinks.forEach(
       function (link) {
         link.addEventListener("click", function (event) {
-          console.log(`play ${event.target.id}`)
-
+          console.log(`Playing ${event.target.id}`)
+          // Retrieve the data for the selected track
           let myTrack = data.filter(track => track.trackId == event.target.id)
+          // Create an audio player for the selected track
           document.querySelector("#play").innerHTML = `<audio id="player_${event.target.id}" src="${myTrack[0].previewUrl} "></audio>`
           document.querySelector(`#player_${event.target.id}`).play()
         })
       })
 
 
-    // Add eventlisteners for all pause button  
-    // The pause will stop any track not only it's own - not a bug but a feuture  
+    // Create event listeners for any pause button   
     let pauseLinks = document.querySelectorAll(".fa-pause")
     pauseLinks.forEach(
       link => {
         link.addEventListener("click", () => {
-          let sounds = document.querySelectorAll("audio")
-          sounds.forEach(sound => sound.pause())
-          console.log("Stop it!")
+          //Select and stop the running audio player
+          let sounds = document.querySelector("audio")
+          sounds.pause()
+          console.log("Stop music!")
         })
       })
   }
@@ -118,7 +114,6 @@ class TrackList {
   render() {
     // Out put will hold the complete view
     let output = ""
-
     // Setting up data for our view
     const header = "<h1>My Tracks</h1>"
     // template methode accepts data to view and returns html string
@@ -130,6 +125,8 @@ class TrackList {
     output += template
     // Assinging view in to innerHTML of our domElement form the constructor
     this.container.innerHTML = output
+    // Add EventLiseners
+    this.addEventListeners()
   }
 }
 

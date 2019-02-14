@@ -29,19 +29,15 @@ class TrackList {
         const { trackId, trackName, artistName, collectionName, releaseDate, artworkUrl100, trackPrice, currency, previewUrl } = track;
 
         const divElement = `
-        <div class="row">
-          <div>
-          <img src="${artworkUrl100}"></div>
-          <div>${trackName} <p>Released: ${new Date(releaseDate).toLocaleDateString()}</p></div>
-          <div>${artistName}<p>${collectionName}</p></div>
-          <div>${trackPrice == -1 ? "Only album" : trackPrice} ${currency == "USD" ? trackPrice == -1 ? "" : "$" : "€"}</div>
-          <div>
-          <audio id="player_${trackId}" src="${previewUrl}"></audio>
-          <i class="fas fa-play" id="${trackId}"></i>
-          <i class="fas fa-pause" id="${trackId}"></i>
-          </div>
-        </div>
-        `
+    <div class="row">
+      <div>
+      <img src="${artworkUrl100}"></div>
+      <div>${trackName} <p>Released: ${new Date(releaseDate).toLocaleDateString()}</p></div>
+      <div>${artistName}<p>${collectionName}</p></div>
+      <div>${trackPrice == -1 ? "Only album" : trackPrice} ${currency == "USD" ? trackPrice == -1 ? "" : "$" : "€"}</div>
+
+    </div>
+    `
 
         return divElement
 
@@ -56,21 +52,6 @@ class TrackList {
     this.modViewData(this.filtered)
   }
 
-  sortPricing() {
-
-  }
-
-  addEventListeners() {
-
-    // Add event listener for filter input
-    document.querySelector("#filter-input").addEventListener('keyup',
-      event => {
-        myTrackList.filterTracks(event.target.value)
-      }
-    )
-  }
-
-
   render() {
     // Out put will hold the complete view
     let output = ""
@@ -82,15 +63,23 @@ class TrackList {
     // Adding data in to our view !Order Matters!
     output += header
     output += "<p>Data from iTunes</p>"
-    output += "<div class=\"row th\"><div>Cover</div><div>Track</div><div>Artist</div><div id='price'>Price</div><div>Preview</div></div></div > "
+    output += "<div class=\"row th\"><div>Cover</div><div>Track</div><div>Artist</div><div id='price'>Price</div></div></div > "
     output += template
     // Assinging view in to innerHTML of our domElement form the constructor
     this.container.innerHTML = output
 
     // Add all eventLiseners
-    this.addEventListeners()
+    //this.addEventListeners()
   }
 }
 
 
 const myTrackList = new TrackList("#tracks", music)
+// Add event listener for filter input
+document.querySelector("#filter-input").addEventListener('keyup',
+  event => {
+    console.log("Fired")
+    myTrackList.filterTracks(event.target.value)
+
+  }
+)

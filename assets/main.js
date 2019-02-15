@@ -55,16 +55,27 @@ class TrackList {
     this.modViewData(newData)
   }
 
+  isSorted(array, prop) {
+    return array.slice(1).every((item, i) => array[i][prop] <= item[prop])
+  }
+
   sortPricing() {
-    // Sort the prices
-    const order = this.viewData[0].trackPrice
-      < this.viewData[this.viewData.length - 1].trackPrice
+    // Sort by trackPrice
+    const isAscending = this.isSorted(this.viewData, 'trackPrice')
+    console.log(!isAscending ? "Not ASC -> sort ASC" : isAscending ? "It's ASC -> sort Desc" : '')
+    const newData = (!isAscending ? this.viewData.sort((a, b) => a.trackPrice - b.trackPrice)
+      : isAscending ? this.viewData.reverse()
+        : "")
+    this.modViewData(newData)
+  }
 
-    const newData = this.viewData.sort(
-      (a, b) =>
-        (order ? b.trackPrice - a.trackPrice : a.trackPrice - b.trackPrice)
-    )
 
+  sortArtist() {
+    // Sort by artistName
+    const isAlphabetic = this.isSorted(this.viewData, 'artistName')
+    console.log(!isAlphabetic ? "Not Alphabetically -> sort Alphabetically" : isAlphabetic ? "It's Alphabetically -> reverse order" : '')
+
+    const newData = (!isAlphabetic ? this.viewData.sort((a, b) => a.artistName.localeCompare(b.artistName)) : isAlphabetic ? this.viewData.reverse() : '')
     this.modViewData(newData)
   }
 
@@ -78,9 +89,9 @@ class TrackList {
         myTrackList.filterTracks(event.target.value)
       }
 
-    // Event listener to sort price
+    // Event listener to sort price and artist
     document.querySelector("#price").addEventListener("click", () => this.sortPricing())
-
+    document.querySelector("#artist").addEventListener("click", () => this.sortArtist())
     // Create event listeners for any play-button
     let playLinks = document.querySelectorAll(".fa-play")
     let data = this.data
@@ -121,7 +132,7 @@ class TrackList {
     // Adding data in to our view !Order Matters!
     output += header
     output += `<p><i class="fas fa-music"></i> <span class="counter">${Object.keys(this.viewData).length}</span> tracks from iTunes</p>`
-    output += "<div class=\"row th\"><div>Cover</div><div>Track</div><div>Artist</div><div id='price'>Price</div><div>Preview</div></div></div > "
+    output += "<div class=\"row th\"><div>Cover</div><div>Track</div><div id='artist'>Artist</div><div id='price'>Price</div><div>Preview</div></div></div > "
     output += template
     // Assinging view in to innerHTML of our domElement form the constructor
     this.container.innerHTML = output

@@ -51,7 +51,7 @@ class TrackList {
   }
   // Search filter
   filterTracks(search) {
-    const newData = this.data.filter(track => track.artistName.toLowerCase().includes(search.toLowerCase()))
+    const newData = this.data.filter(track => track.artistName.toLowerCase().includes(search.toLowerCase()) || track.trackName.toLowerCase().includes(search.toLowerCase()))
     this.modViewData(newData)
   }
 

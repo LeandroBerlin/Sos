@@ -23,12 +23,13 @@ body{
 .th {font-weight: bold;padding-bottom:1em}
 
 
-#filter-input {
+#filter-input, #search-input {
   float: right;
-  padding: 5px 10px;
+  padding: .5em .9em;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.3em;
   outline: none;
+  margin-right: .5em;
 }
 
 label {

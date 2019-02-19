@@ -2,15 +2,16 @@
 
 class TrackList {
   // Creating our Class
-  constructor(domSelector, data) {
+  constructor(domSelector, search) {
     // Getting a dom-element
     this.container = document.querySelector(domSelector)
-    // Store my data
-    this.data = data
-    // Represents the currently displayed data
-    this.viewData = data
-    // Show stuff
-    this.render()
+    // Search
+    this.search = search
+    // Data source
+    this.url = `https://dci-fbw12-search-itunes.now.sh/?term=`
+    this.media = "music"
+    // Search Tracks
+    this.searchTracks()
   }
 
   modViewData(newData) {
@@ -49,10 +50,26 @@ class TrackList {
 
     return trackList
   }
-  // Search filter
+  // Filter
   filterTracks(search) {
     const newData = this.data.filter(track => track.artistName.toLowerCase().includes(search.toLowerCase()) || track.trackName.toLowerCase().includes(search.toLowerCase()))
     this.modViewData(newData)
+  }
+
+
+  // Search
+  searchTracks() {
+    const searchUrl = `${this.url}${this.search}&media=${this.media}`
+    fetch(searchUrl)
+      .then(response => {
+        return response.json()
+      }).then((data) => {
+        this.data = data.results
+        this.modViewData(data.results)
+      })
+      .catch(function (err) {
+        console.log("Something went wrong!", err)
+      })
   }
 
   isSorted(array, prop) {
@@ -85,13 +102,22 @@ class TrackList {
     // GlobalEventHandler to filter input
     document.querySelector("#filter-input").onkeyup =
       event => {
+        console.log(`Filtering: ${event.target.value}`)
+        this.filterTracks(event.target.value)
+      }
+
+    document.querySelector("#search-input").onkeyup =
+      event => {
         console.log(`Searching: ${event.target.value}`)
-        myTrackList.filterTracks(event.target.value)
+        this.search = event.target.value
+        this.searchTracks()
       }
 
     // Event listener to sort price and artist
     document.querySelector("#price").addEventListener("click", () => this.sortPricing())
+
     document.querySelector("#artist").addEventListener("click", () => this.sortArtist())
+
     // Create event listeners for any play-button
     let playLinks = document.querySelectorAll(".fa-play")
     let data = this.data
@@ -131,8 +157,8 @@ class TrackList {
     const template = this.template(this.viewData)
     // Adding data in to our view !Order Matters!
     output += header
-    output += `<p><i class="fas fa-music"></i> <span class="counter">${Object.keys(this.viewData).length}</span> tracks from iTunes</p>`
-    output += "<div class=\"row th\"><div>Cover</div><div>Track</div><div id='artist'>Artist</div><div id='price'>Price</div><div>Preview</div></div></div > "
+    output += `<p><i class="fas fa-music"></i> <span class="counter">${Object.keys(this.viewData).length} tracks</span> from iTunes</p>`
+    output += "<div class=\"row th\"><div>Cover</div><div>Track</div><div id='artist' title='sort order'>Artist</div><div id='price' title='Sort prices'>Price</div><div>Preview</div></div></div > "
     output += template
     // Assinging view in to innerHTML of our domElement form the constructor
     this.container.innerHTML = output
@@ -141,5 +167,8 @@ class TrackList {
   }
 }
 
-const myTrackList = new TrackList("#tracks", music)
+
+const myTrackList = new TrackList("#tracks", "Sound of Silence")
+
+
 

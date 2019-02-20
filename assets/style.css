@@ -16,6 +16,10 @@ body{
   flex: 1;
 }
 
+.row > div {
+  padding: 0 0 0 1.2em
+}
+
 .row > img {
   width: auto;
 }
@@ -39,9 +43,11 @@ label {
   outline: none;
 }
 
-p{ font-size: smaller}
+p{ 
+  font-size: smaller;
+}
 
-#price,#artist{
+#price,#artist,#track{
   cursor: pointer;
 }
 

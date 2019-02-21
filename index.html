@@ -13,9 +13,15 @@
 </head>
 
 <body>
-  <input type="text" id="search-input" placeholder="Search Artist or Track">
-  <input type="text" id="filter-input" placeholder="Filter Artist or Track">
-  <label><i class="fas fa-search"></i></label>
+  <div class="filter">
+    <input type="text" id="filter-input" placeholder="Filter by Artist, Album or Track">
+  </div>
+  <div class="search">
+    <i class="fas fa-search"></i>
+    <input type="text" id="search-input" placeholder="Search Artist or Track">
+    <input type="button" id="search-button" value="Search">
+  </div>
+
   <div id="tracks"></div>
   <div id="play"></div>
   <script src="./assets/main.js"></script>

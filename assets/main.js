@@ -53,7 +53,12 @@ class TrackList {
   }
   // Filter
   filterTracks(search) {
-    const newData = this.data.filter(track => track.artistName.toLowerCase().includes(search.toLowerCase()) || track.trackName.toLowerCase().includes(search.toLowerCase()))
+    const newData = this.data.filter(track => track.artistName.toLowerCase().includes(search.toLowerCase())
+      ||
+      track.trackName.toLowerCase().includes(search.toLowerCase())
+      ||
+      track.collectionName.toLowerCase().includes(search.toLowerCase())
+    )
     this.modViewData(newData)
   }
 
@@ -84,9 +89,9 @@ class TrackList {
       //regex remove special chars -> /[^a-zA-Z ]/g, ""
       //.toLowerCase() to compare without case sensitivity.
       return array.slice(1).every((item, i) => {
-        //console.log(array[i][prop].replace(/[^a-zA-Z ]/g, "") + " vs " + item[prop].replace(/[^a-zA-Z ]/g, ""))
-        //console.log(array[i][prop].replace(/[^a-zA-Z ]/g, "") <= item[prop].replace(/[^a-zA-Z ]/g, ""))
-        return array[i][prop].replace(/[^a-zA-Z ]/g, "").toLowerCase() <= item[prop].replace(/[^a-zA-Z ]/g, "").toLowerCase()
+        //console.log(array[i][prop].toLowerCase().replace(/[^a-z0-9]+/ig, "") + " vs " + item[prop].toLowerCase().replace(/[^a-z0-9]+/ig, ""))
+        //console.log(array[i][prop].toLowerCase().replace(/[^a-z0-9]+/ig, "") <= item[prop].toLowerCase().replace(/[^a-z0-9]+/ig, ""))
+        return array[i][prop].toLowerCase().replace(/[^a-z0-9]+/ig, "") <= item[prop].toLowerCase().replace(/[^A-Z0-9]+/ig, "")
       })
     }
 
@@ -102,6 +107,16 @@ class TrackList {
         : "")
     this.modViewData(newData)
   }
+
+  sortAlbum() {
+    // Sort by artistName
+    const isAlphabetic = this.isSorted(this.viewData, "collectionName")
+    const newData = (!isAlphabetic ? this.viewData.sort((a, b) => a.collectionName.replace(/[^a-z0-9]+/ig, "").localeCompare(b.collectionName.replace(/[^a-z0-9]+/ig, ""))) : isAlphabetic ? this.viewData.reverse()
+      : "")
+    console.log(this.isSorted(newData, "collectionName"))
+    this.modViewData(newData)
+  }
+
 
   sortArtist() {
     // Sort by artistName
@@ -130,15 +145,22 @@ class TrackList {
 
     document.querySelector("#search-input").onkeyup =
       event => {
-        console.log(`Searching: ${event.target.value}`)
-        this.search = (event.target.value !== "" ? event.target.value : this.search)
-        this.searchTracks()
+        if (event.keyCode === 13) {
+          event.preventDefault()
+          document.querySelector("#search-button").click()
+        }
       }
 
     // Event listener to sort price and artist
+    document.querySelector("#search-button").addEventListener("click", () => {
+      console.log(`Searching: ${document.querySelector("#search-input").value}`)
+      this.search = (document.querySelector("#search-input").value !== "" ? document.querySelector("#search-input").value : this.search)
+      this.searchTracks()
+    })
     document.querySelector("#price").addEventListener("click", () => this.sortPricing())
     document.querySelector("#track").addEventListener("click", () => this.sortTrack())
     document.querySelector("#artist").addEventListener("click", () => this.sortArtist())
+    document.querySelector("#album").addEventListener("click", () => this.sortAlbum())
 
     // Create event listeners for any play-button
     let playLinks = document.querySelectorAll(".fa-play")
@@ -180,7 +202,7 @@ class TrackList {
     // Adding data in to our view !Order Matters!
     output += header
     output += `<p><i class="fas fa-music"></i> <span class="counter">${Object.keys(this.viewData).length} tracks</span> from iTunes</p>`
-    output += "<div class=\"row th\"><div>Cover</div><div id='track'>Track</div><div id='artist' title='sort order'>Artist</div><div>Album</div><div>Release date</div><div id='price' title='Sort prices'>Price</div><div>Preview</div></div></div > "
+    output += "<div class=\"row th\"><div>Cover</div><div id='track'>Track</div><div id='artist' title='sort order'>Artist</div><div id='album'>Album</div><div>Release date</div><div id='price' title='Sort prices'>Price</div><div>Preview</div></div></div > "
     output += template
     // Assinging view in to innerHTML of our domElement form the constructor
     this.container.innerHTML = output
@@ -190,7 +212,7 @@ class TrackList {
 }
 
 
-const myTrackList = new TrackList("#tracks", "Nick Cave")
+const myTrackList = new TrackList("#tracks", "Joy Division")
 
 
 
